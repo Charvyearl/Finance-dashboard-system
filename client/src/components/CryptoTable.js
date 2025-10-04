@@ -6,39 +6,49 @@ const CryptoTable = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchCryptoData = async () => {
+  // Get cryptocurrency data from our server
+  const getCryptoData = async () => {
     try {
       setLoading(true);
       setError(null);
       const response = await cryptoAPI.getPrices();
-      setCryptoData(response.data.data);
+      
+      if (response.data.success) {
+        setCryptoData(response.data.data);
+      } else {
+        throw new Error(response.data.message || 'Failed to get cryptocurrency data');
+      }
     } catch (err) {
-      setError('Failed to fetch cryptocurrency data');
-      console.error('Crypto fetch error:', err);
+      const errorMessage = err.response?.data?.message || err.message || 'Could not get cryptocurrency data';
+      setError(errorMessage);
+      console.error('Error getting crypto data:', err);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchCryptoData();
+    getCryptoData();
     
-    // Auto-refresh every 30 seconds
-    const interval = setInterval(fetchCryptoData, 30000);
+    // Get new data every 30 seconds
+    const interval = setInterval(getCryptoData, 30000);
     
     return () => clearInterval(interval);
   }, []);
 
+  // Make price look nice with dollar sign and commas
   const formatPrice = (price) => {
     return `$${parseFloat(price).toLocaleString()}`;
   };
 
+  // Make percentage change look nice with + or - sign
   const formatChange = (change) => {
     const changeNum = parseFloat(change);
     const sign = changeNum >= 0 ? '+' : '';
     return `${sign}${changeNum.toFixed(2)}%`;
   };
 
+  // Make big numbers shorter (1,000,000,000 becomes 1B)
   const formatMarketCap = (marketCap) => {
     const num = parseFloat(marketCap);
     if (num >= 1e12) return `$${(num / 1e12).toFixed(2)}T`;
@@ -47,6 +57,7 @@ const CryptoTable = () => {
     return `$${num.toLocaleString()}`;
   };
 
+  // Make volume numbers shorter
   const formatVolume = (volume) => {
     const num = parseFloat(volume);
     if (num >= 1e9) return `$${(num / 1e9).toFixed(2)}B`;
@@ -58,28 +69,38 @@ const CryptoTable = () => {
     return (
       <div className="loading-container">
         <div className="spinner"></div>
-        <div className="loading-text">Loading crypto data...</div>
+        <div className="loading-text">Getting crypto data...</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="error">
-        {error}
+      <div className="error" style={{ 
+        padding: '2rem', 
+        textAlign: 'center', 
+        background: '#fef2f2', 
+        border: '1px solid #fecaca', 
+        borderRadius: '8px',
+        color: '#dc2626',
+        margin: '1rem 0'
+      }}>
+        <h3 style={{ margin: '0 0 1rem 0', fontSize: '1.2rem' }}>⚠️ Service Unavailable</h3>
+        <p style={{ margin: '0 0 1rem 0' }}>{error}</p>
         <button 
-          onClick={fetchCryptoData}
+          onClick={getCryptoData}
           style={{ 
-            marginLeft: '1rem', 
-            padding: '0.5rem 1rem', 
+            padding: '0.75rem 1.5rem', 
             background: '#dc2626', 
             color: 'white', 
             border: 'none', 
-            borderRadius: '4px',
-            cursor: 'pointer'
+            borderRadius: '6px',
+            cursor: 'pointer',
+            fontSize: '1rem',
+            fontWeight: '500'
           }}
         >
-          Retry
+          🔄 Try Again
         </button>
       </div>
     );

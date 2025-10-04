@@ -4,9 +4,9 @@ const Header = ({ activeSection, setActiveSection }) => {
   const currentTime = new Date().toLocaleString();
 
   const navItems = [
-    { id: 'crypto', label: '📈 Crypto', icon: '₿' },
-    { id: 'stocks', label: '📊 Stocks', icon: '📈' },
-    { id: 'currency', label: '💱 Currency', icon: '💱' }
+    { id: 'crypto', label: ' Crypto', icon: '₿' },
+    { id: 'stocks', label: ' Stocks', icon: '📈' },
+    { id: 'currency', label: ' Currency', icon: '💱' }
   ];
 
   return (

@@ -1,56 +1,58 @@
 # 💰 Finance Dashboard
 
-A comprehensive financial dashboard that provides real-time cryptocurrency prices, stock market updates, and currency exchange rates through a modern web interface.
+A full-stack financial dashboard application with separated backend and frontend services. Shows cryptocurrency prices, stock prices, and currency exchange rates.
 
-## 🚀 Features
+## 🚀 What it does
 
 ### 📈 Cryptocurrency Prices
-- Live cryptocurrency prices (BTC, ETH, and 18+ other major cryptocurrencies)
-- Real-time price updates every 30 seconds
-- Market cap, volume, and 24h change data
-- Responsive table with sorting and filtering
+- Shows prices for Bitcoin, Ethereum, and other cryptocurrencies
+- Updates prices every 30 seconds
+- Shows how much prices went up or down
+- Shows market value and trading volume
 
-### 📊 Stock Market Updates
-- Interactive stock charts with 30-day historical data
-- Real-time stock prices for major companies (AAPL, TSLA, GOOGL, etc.)
-- Interactive stock selector
-- Price change indicators and percentages
+### 📊 Stock Prices
+- Shows prices for big companies like Apple, Tesla, Google
+- Interactive charts showing price history
+- Click different stocks to see their charts
+- Shows if prices went up or down
 
-### 💱 Currency Exchange
-- Real-time exchange rates for 12+ major currencies
-- Interactive currency converter
-- Popular currency pairs quick selection
-- Support for USD, EUR, GBP, JPY, CAD, AUD, CHF, CNY, INR, BRL, PHP, KRW
+### 💱 Currency Converter
+- Convert money from one currency to another
+- Works with USD, EUR, GBP, JPY, and more
+- Quick buttons for popular currency pairs
+- Shows current exchange rates
 
-## 🛠️ Tech Stack
+## 🛠️ What it's made with
 
-### Backend
-- **Node.js** with **Express.js**
-- **RESTful API** design
-- **CORS** enabled for cross-origin requests
-- **Axios** for external API calls
-- **dotenv** for environment variables
+### Backend (Server)
+- **Node.js** - Makes the server work
+- **Express.js** - Helps create the server
+- **Axios** - Gets data from other websites
+- **CORS** - Allows websites to talk to our server
 
-### Frontend
-- **React.js** 18 with functional components and hooks
-- **Recharts** for interactive charts
-- **Axios** for API communication
-- **CSS3** with modern styling and animations
-- **Responsive design** for all screen sizes
+### Frontend (Website)
+- **React.js** - Makes the website interactive
+- **Recharts** - Makes the charts look nice
+- **CSS3** - Makes everything look pretty
+- **Responsive design** - Works on phones and computers
 
-### External APIs
-- **CoinCap API** for cryptocurrency data
-- **Exchange Rate API** for currency conversion
-- **Mock data** for stock market (easily replaceable with real APIs)
+### Data Sources
+- **CoinCap API** - Gets real cryptocurrency prices
+- **Exchange Rate API** - Gets real currency exchange rates
+- **Fake data** - For stock prices (easy to replace with real data)
 
 ## 📁 Project Structure
 
 ```
 Finance/
-├── server.js                 # Express server
-├── package.json             # Backend dependencies
-├── env.example              # Environment variables template
-├── client/                  # React frontend
+├── backend/                 # Backend API service
+│   ├── server.js           # Express API server
+│   ├── package.json        # Backend dependencies
+│   ├── .env.example        # Backend environment template
+│   ├── start.bat           # Windows start script
+│   ├── start.sh            # Linux/Mac start script
+│   └── README.md           # Backend documentation
+├── client/                  # Frontend React application
 │   ├── public/
 │   │   └── index.html
 │   ├── src/
@@ -66,67 +68,77 @@ Finance/
 │   │   ├── App.css          # Main styles
 │   │   ├── index.js         # React entry point
 │   │   └── index.css        # Global styles
-│   └── package.json         # Frontend dependencies
-└── README.md
+│   ├── package.json         # Frontend dependencies
+│   ├── .env.example         # Frontend environment template
+│   ├── start.bat            # Windows start script
+│   ├── start.sh             # Linux/Mac start script
+│   └── README.md            # Frontend documentation
+└── README.md                # Main project documentation
 ```
 
-## 🚀 Quick Start
+## 🚀 How to run it
 
-### Prerequisites
-- Node.js (v14 or higher)
-- npm or yarn
+### What you need
+- Node.js (version 14 or newer)
+- npm (comes with Node.js)
 
-### Installation
+### Step by step
 
-1. **Clone or download the project**
+#### Option 1: Run Both Services Separately (Recommended)
+
+1. **Start the Backend API**
    ```bash
-   cd Finance
-   ```
-
-2. **Install backend dependencies**
-   ```bash
+   cd backend
    npm install
+   npm run dev
    ```
+   Backend will run on: http://localhost:5000
 
-3. **Install frontend dependencies**
+2. **Start the Frontend** (in a new terminal)
    ```bash
    cd client
    npm install
-   cd ..
+   npm start
    ```
+   Frontend will run on: http://localhost:3000
 
-4. **Set up environment variables (optional)**
-   ```bash
-   cp env.example .env
-   ```
-   Edit `.env` and add your Alpha Vantage API key if you want real stock data.
+#### Option 2: Use Start Scripts
 
-5. **Start the development servers**
+**Windows:**
+```bash
+# Terminal 1 - Backend
+cd backend
+start.bat
 
-   **Option A: Start both servers separately**
-   ```bash
-   # Terminal 1 - Backend
-   npm run dev
+# Terminal 2 - Frontend
+cd client
+start.bat
+```
 
-   # Terminal 2 - Frontend
-   npm run client
-   ```
+**Linux/Mac:**
+```bash
+# Terminal 1 - Backend
+cd backend
+./start.sh
 
-   **Option B: Start both servers with one command**
-   ```bash
-   npm run dev:full
-   ```
+# Terminal 2 - Frontend
+cd client
+./start.sh
+```
 
-6. **Open your browser**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:5000
+### Access the Application
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:5000
+- **API Health Check**: http://localhost:5000/api/health
 
-## 🔧 API Endpoints
+## 🔧 Backend API Endpoints
+
+The backend provides RESTful API endpoints for financial data:
 
 ### GET /api/crypto
-Returns cryptocurrency prices and market data.
+Gets cryptocurrency prices.
 
-**Response:**
+**What it returns:**
 ```json
 {
   "success": true,
@@ -141,15 +153,14 @@ Returns cryptocurrency prices and market data.
       "volume24h": "25000000000",
       "rank": "1"
     }
-  ],
-  "timestamp": "2024-01-01T12:00:00.000Z"
+  ]
 }
 ```
 
 ### GET /api/stocks
-Returns stock market data.
+Gets stock prices.
 
-**Response:**
+**What it returns:**
 ```json
 {
   "success": true,
@@ -161,17 +172,16 @@ Returns stock market data.
       "change": 2.15,
       "changePercent": 1.24
     }
-  ],
-  "timestamp": "2024-01-01T12:00:00.000Z"
+  ]
 }
 ```
 
 ### GET /api/currency/{from}/{to}
-Returns exchange rate between two currencies.
+Converts money from one currency to another.
 
 **Example:** `/api/currency/USD/EUR`
 
-**Response:**
+**What it returns:**
 ```json
 {
   "success": true,
@@ -181,13 +191,12 @@ Returns exchange rate between two currencies.
     "rate": 0.85,
     "amount": 1,
     "result": 0.85
-  },
-  "timestamp": "2024-01-01T12:00:00.000Z"
+  }
 }
 ```
 
 ### GET /api/health
-Health check endpoint.
+Checks if the server is working.
 
 ## 🎨 Features in Detail
 
@@ -211,12 +220,23 @@ Health check endpoint.
 
 ## 🔧 Configuration
 
-### Environment Variables
-Create a `.env` file in the root directory:
+### Backend Environment Variables
+Create a `.env` file in the `backend/` directory:
 
 ```env
 PORT=5000
+NODE_ENV=development
 ALPHA_VANTAGE_API_KEY=your_api_key_here
+CORS_ORIGIN=http://localhost:3000
+```
+
+### Frontend Environment Variables
+Create a `.env` file in the `client/` directory:
+
+```env
+REACT_APP_API_URL=http://localhost:5000/api
+REACT_APP_NODE_ENV=development
+REACT_APP_DEBUG=false
 ```
 
 ### API Keys
@@ -226,21 +246,26 @@ ALPHA_VANTAGE_API_KEY=your_api_key_here
 
 ## 🚀 Production Deployment
 
-### Build for Production
+### Backend Deployment
 ```bash
-# Build React app
-cd client
-npm run build
-cd ..
-
-# Start production server
+cd backend
+npm install --production
 npm start
 ```
 
+### Frontend Deployment
+```bash
+cd client
+npm install
+npm run build
+# Deploy the 'build' folder to your web server/CDN
+```
+
 ### Environment Setup
-1. Set `NODE_ENV=production`
-2. Configure your web server (nginx, Apache) to serve the React build
-3. Set up process management (PM2, systemd)
+1. Set `NODE_ENV=production` in backend
+2. Update `REACT_APP_API_URL` to point to your deployed backend
+3. Configure your web server (nginx, Apache) to serve the React build
+4. Set up process management (PM2, systemd) for the backend
 
 ## 🤝 Contributing
 
@@ -258,23 +283,25 @@ This project is licensed under the MIT License.
 
 ### Common Issues
 
-**Port already in use:**
+**Backend not starting:**
 ```bash
-# Kill process on port 5000
+# Check if port 5000 is available
 npx kill-port 5000
 
-# Or change port in .env
+# Or change port in backend/.env
 PORT=3001
 ```
 
-**CORS errors:**
+**Frontend can't connect to backend:**
 - Make sure the backend is running on port 5000
-- Check that the frontend proxy is configured correctly
+- Check that `REACT_APP_API_URL` is set correctly in client/.env
+- Verify CORS settings in backend
 
 **API errors:**
 - Check your internet connection
 - Verify external APIs are accessible
 - Check browser console for detailed error messages
+- Ensure backend is running and accessible
 
 ### Getting Help
 - Check the browser console for errors

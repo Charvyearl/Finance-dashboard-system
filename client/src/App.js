@@ -11,7 +11,7 @@ function App() {
   const [activeSection, setActiveSection] = useState('crypto');
 
   useEffect(() => {
-    // Simulate initial loading
+    // Show loading screen for 1 second
     const timer = setTimeout(() => {
       setLoading(false);
     }, 1000);
@@ -23,7 +23,8 @@ function App() {
     return <LoadingSpinner />;
   }
 
-  const renderActiveSection = () => {
+  // Show different sections based on what user clicks
+  const showSection = () => {
     switch (activeSection) {
       case 'crypto':
         return (
@@ -35,14 +36,14 @@ function App() {
       case 'stocks':
         return (
           <div className="dashboard-section full-width">
-            <h2>📊 Stock Market Updates</h2>
+            <h2>📊 Stock Prices</h2>
             <StocksChart />
           </div>
         );
       case 'currency':
         return (
           <div className="dashboard-section full-width">
-            <h2>💱 Currency Exchange</h2>
+            <h2>💱 Currency Converter</h2>
             <CurrencyConverter />
           </div>
         );
@@ -61,7 +62,7 @@ function App() {
       <Header activeSection={activeSection} setActiveSection={setActiveSection} />
       <main className="main-content">
         <div className="dashboard-container">
-          {renderActiveSection()}
+          {showSection()}
         </div>
       </main>
     </div>
