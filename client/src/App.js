@@ -1,29 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import Header from './components/Header';
 import CryptoTable from './components/CryptoTable';
 import StocksChart from './components/StocksChart';
 import CurrencyConverter from './components/CurrencyConverter';
-import LoadingSpinner from './components/LoadingSpinner';
 
 function App() {
-  const [loading, setLoading] = useState(true);
   const [activeSection, setActiveSection] = useState('crypto');
 
-  useEffect(() => {
-    // Show loading screen for 1 second
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (loading) {
-    return <LoadingSpinner />;
-  }
-
-  // Show different sections based on what user clicks
   const showSection = () => {
     switch (activeSection) {
       case 'crypto':

@@ -1,173 +1,141 @@
 # 💰 Finance Dashboard
 
-A full-stack financial dashboard application with separated backend and frontend services. Shows cryptocurrency prices, stock prices, and currency exchange rates.
+A simple financial dashboard that displays cryptocurrency prices, stock prices, and currency exchange rates.
 
-## 🚀 What it does
+## 🚀 What It Does
 
 ### 📈 Cryptocurrency Prices
-- Shows prices for Bitcoin, Ethereum, and other cryptocurrencies
-- Updates prices every 30 seconds
-- Shows how much prices went up or down
-- Shows market value and trading volume
+- Shows top 20 cryptocurrencies by market cap
+- Real-time prices from CoinGecko API
+- Auto-refreshes every 30 seconds
+- Displays price changes, market cap, and trading volume
 
 ### 📊 Stock Prices
-- Shows prices for big companies like Apple, Tesla, Google
-- Interactive charts showing price history
-- Click different stocks to see their charts
-- Shows if prices went up or down
+- Shows 20 popular stock symbols (AAPL, MSFT, NVDA, etc.)
+- Real-time quotes from Finnhub API
+- Auto-refreshes every 60 seconds
+- Displays current prices and percentage changes
 
 ### 💱 Currency Converter
-- Convert money from one currency to another
-- Works with USD, EUR, GBP, JPY, and more
+- Converts between major currencies (USD, EUR, GBP, JPY, etc.)
+- Real-time exchange rates
 - Quick buttons for popular currency pairs
-- Shows current exchange rates
+- Fallback rates when API is unavailable
 
-## 🛠️ What it's made with
+## 🛠️ Tech Stack
 
-### Backend (Server)
-- **Node.js** - Makes the server work
-- **Express.js** - Helps create the server
-- **Axios** - Gets data from other websites
-- **CORS** - Allows websites to talk to our server
+**Backend:**
+- Node.js + Express
+- Axios for API calls
+- CORS enabled
 
-### Frontend (Website)
-- **React.js** - Makes the website interactive
-- **Recharts** - Makes the charts look nice
-- **CSS3** - Makes everything look pretty
-- **Responsive design** - Works on phones and computers
+**Frontend:**
+- React.js
+- Axios for API calls
+- Responsive CSS
 
-### Data Sources
-- **CoinCap API** - Gets real cryptocurrency prices
-- **Exchange Rate API** - Gets real currency exchange rates
-- **Fake data** - For stock prices (easy to replace with real data)
+**Data Sources:**
+- CoinGecko API (cryptocurrency)
+- Finnhub API (stocks)
+- ExchangeRate API (currency)
 
 ## 📁 Project Structure
 
 ```
 Finance/
-├── backend/                 # Backend API service
-│   ├── server.js           # Express API server
-│   ├── package.json        # Backend dependencies
-│   ├── .env.example        # Backend environment template
-│   ├── start.bat           # Windows start script
-│   ├── start.sh            # Linux/Mac start script
-│   └── README.md           # Backend documentation
-├── client/                  # Frontend React application
-│   ├── public/
-│   │   └── index.html
+├── backend/              # Backend API service
+│   ├── server.js        # Express server
+│   ├── package.json     # Backend dependencies
+│   └── .env.example     # Environment template
+├── client/              # Frontend React app
 │   ├── src/
-│   │   ├── components/      # React components
-│   │   │   ├── Header.js
-│   │   │   ├── CryptoTable.js
-│   │   │   ├── StocksChart.js
-│   │   │   ├── CurrencyConverter.js
-│   │   │   └── LoadingSpinner.js
-│   │   ├── services/        # API services
-│   │   │   └── api.js
-│   │   ├── App.js           # Main App component
-│   │   ├── App.css          # Main styles
-│   │   ├── index.js         # React entry point
-│   │   └── index.css        # Global styles
-│   ├── package.json         # Frontend dependencies
-│   ├── .env.example         # Frontend environment template
-│   ├── start.bat            # Windows start script
-│   ├── start.sh             # Linux/Mac start script
-│   └── README.md            # Frontend documentation
-└── README.md                # Main project documentation
+│   │   ├── components/  # React components
+│   │   ├── services/    # API services
+│   │   └── App.js       # Main app
+│   ├── package.json     # Frontend dependencies
+│   └── .env.example     # Environment template
+└── README.md            # This file
 ```
 
-## 🚀 How to run it
+## 🚀 How to Run
 
-### What you need
-- Node.js (version 14 or newer)
-- npm (comes with Node.js)
+### Prerequisites
+- Node.js (v14 or higher)
+- npm
+- Finnhub API key (free at https://finnhub.io/register)
 
-### Step by step
+### Step 1: Setup Backend
 
-#### Option 1: Run Both Services Separately (Recommended)
-
-1. **Start the Backend API**
-   ```bash
-   cd backend
-   npm install
-   npm run dev
-   ```
-   Backend will run on: http://localhost:5000
-
-2. **Start the Frontend** (in a new terminal)
-   ```bash
-   cd client
-   npm install
-   npm start
-   ```
-   Frontend will run on: http://localhost:3000
-
-#### Option 2: Use Start Scripts
-
-**Windows:**
 ```bash
-# Terminal 1 - Backend
 cd backend
-start.bat
-
-# Terminal 2 - Frontend
-cd client
-start.bat
+npm install
 ```
 
-**Linux/Mac:**
+Create a `.env` file in the `backend` folder:
+```env
+PORT=5000
+FINNHUB_API_KEY=your_api_key_here
+```
+
+Start the backend:
 ```bash
-# Terminal 1 - Backend
-cd backend
-./start.sh
+npm run dev
+```
+Backend will run on: http://localhost:5000
 
-# Terminal 2 - Frontend
+### Step 2: Setup Frontend
+
+Open a new terminal:
+```bash
 cd client
-./start.sh
+npm install
 ```
 
-### Access the Application
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:5000
-- **API Health Check**: http://localhost:5000/api/health
+Create a `.env` file in the `client` folder (optional):
+```env
+REACT_APP_API_URL=http://localhost:5000/api
+```
 
-## 🔧 Backend API Endpoints
+Start the frontend:
+```bash
+npm start
+```
+Frontend will run on: http://localhost:3000
 
-The backend provides RESTful API endpoints for financial data:
+## 🔗 API Endpoints
 
 ### GET /api/crypto
-Gets cryptocurrency prices.
+Get cryptocurrency prices.
 
-**What it returns:**
+**Response:**
 ```json
 {
   "success": true,
   "data": [
     {
-      "id": "bitcoin",
       "symbol": "BTC",
       "name": "Bitcoin",
       "price": "43250.12",
       "change24h": "2.45",
       "marketCap": "850000000000",
       "volume24h": "25000000000",
-      "rank": "1"
+      "rank": 1
     }
   ]
 }
 ```
 
 ### GET /api/stocks
-Gets stock prices.
+Get stock prices.
 
-**What it returns:**
+**Response:**
 ```json
 {
   "success": true,
   "data": [
     {
       "symbol": "AAPL",
-      "name": "Apple Inc.",
+      "name": "AAPL",
       "price": 175.43,
       "change": 2.15,
       "changePercent": 1.24
@@ -176,12 +144,12 @@ Gets stock prices.
 }
 ```
 
-### GET /api/currency/{from}/{to}
-Converts money from one currency to another.
+### GET /api/currency/:from/:to
+Convert currency.
 
 **Example:** `/api/currency/USD/EUR`
 
-**What it returns:**
+**Response:**
 ```json
 {
   "success": true,
@@ -196,130 +164,54 @@ Converts money from one currency to another.
 ```
 
 ### GET /api/health
-Checks if the server is working.
-
-## 🎨 Features in Detail
-
-### Cryptocurrency Table
-- **Auto-refresh**: Updates every 30 seconds
-- **Real-time data**: Live prices from CoinCap API
-- **Comprehensive info**: Price, change, market cap, volume
-- **Responsive design**: Works on all screen sizes
-
-### Stock Market Chart
-- **Interactive charts**: Built with Recharts library
-- **Historical data**: 30-day price movement simulation
-- **Stock selector**: Switch between different stocks
-- **Quick stats**: Overview of multiple stocks
-
-### Currency Converter
-- **Real-time rates**: Live exchange rates
-- **12+ currencies**: Major world currencies supported
-- **Quick pairs**: Popular currency combinations
-- **Swap function**: Easy currency switching
+Check server status.
 
 ## 🔧 Configuration
 
-### Backend Environment Variables
-Create a `.env` file in the `backend/` directory:
-
-```env
-PORT=5000
-NODE_ENV=development
-ALPHA_VANTAGE_API_KEY=your_api_key_here
-CORS_ORIGIN=http://localhost:3000
-```
-
-### Frontend Environment Variables
-Create a `.env` file in the `client/` directory:
-
-```env
-REACT_APP_API_URL=http://localhost:5000/api
-REACT_APP_NODE_ENV=development
-REACT_APP_DEBUG=false
-```
-
 ### API Keys
-- **CoinCap API**: No key required (free tier)
-- **Exchange Rate API**: No key required (free tier)
-- **Alpha Vantage**: Optional, for real stock data
+- **CoinGecko**: No key required (free tier)
+- **ExchangeRate API**: No key required (free tier)
+- **Finnhub**: Required - get free key at https://finnhub.io/register
 
-## 🚀 Production Deployment
+### Rate Limits
+- Finnhub Free Plan: 60 calls/minute, 30 calls/second
+- Displays 20 stocks = 20 API calls per refresh
+- Auto-refresh every 60 seconds = within rate limits
 
-### Backend Deployment
+## 🎯 Features
+
+✅ Real-time financial data  
+✅ Auto-refresh intervals  
+✅ Error handling with retry  
+✅ Responsive design  
+✅ Simple and clean UI  
+✅ Separated backend/frontend  
+
+## 🐛 Troubleshooting
+
+**Port already in use:**
 ```bash
-cd backend
-npm install --production
-npm start
-```
-
-### Frontend Deployment
-```bash
-cd client
-npm install
-npm run build
-# Deploy the 'build' folder to your web server/CDN
-```
-
-### Environment Setup
-1. Set `NODE_ENV=production` in backend
-2. Update `REACT_APP_API_URL` to point to your deployed backend
-3. Configure your web server (nginx, Apache) to serve the React build
-4. Set up process management (PM2, systemd) for the backend
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## 📝 License
-
-This project is licensed under the MIT License.
-
-## 🆘 Troubleshooting
-
-### Common Issues
-
-**Backend not starting:**
-```bash
-# Check if port 5000 is available
+# Kill process on port 5000 (backend)
 npx kill-port 5000
 
 # Or change port in backend/.env
 PORT=3001
 ```
 
-**Frontend can't connect to backend:**
-- Make sure the backend is running on port 5000
-- Check that `REACT_APP_API_URL` is set correctly in client/.env
-- Verify CORS settings in backend
-
 **API errors:**
-- Check your internet connection
-- Verify external APIs are accessible
-- Check browser console for detailed error messages
-- Ensure backend is running and accessible
+- Check your Finnhub API key in `backend/.env`
+- Restart the backend server after setting the API key
+- Check internet connection
+- Verify APIs are accessible
 
-### Getting Help
-- Check the browser console for errors
-- Verify all dependencies are installed
-- Ensure both servers are running
-- Check the network tab for API calls
+**Frontend can't connect:**
+- Make sure backend is running on port 5000
+- Check `REACT_APP_API_URL` in client/.env
+- Clear browser cache and hard refresh
 
-## 🎯 Future Enhancements
+## 📝 License
 
-- [ ] Real-time WebSocket connections
-- [ ] User authentication and portfolios
-- [ ] More detailed stock analysis
-- [ ] Cryptocurrency price alerts
-- [ ] Dark/light theme toggle
-- [ ] Mobile app version
-- [ ] Advanced charting tools
-- [ ] News integration
-- [ ] Price prediction models
+MIT License - feel free to use this project!
 
 ---
 

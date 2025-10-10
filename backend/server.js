@@ -2,135 +2,131 @@
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
-const path = require('path');
 require('dotenv').config();
 
 // Create the web server
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Allow websites to talk to our server
+// Allow frontend to talk to our server
 app.use(cors());
 app.use(express.json());
 
-// URLs for getting real data from other websites
-const COINCAP_API = 'https://api.coincap.io/v2';
+// API URLs
 const COINGECKO_API = 'https://api.coingecko.com/api/v3';
-const ALPHA_VANTAGE_API = 'https://www.alphavantage.co/query';
 const EXCHANGE_RATE_API = 'https://api.exchangerate-api.com/v4/latest';
+const FINNHUB_API = 'https://finnhub.io/api/v1';
 
-// API Key for getting real stock data (optional)
-const ALPHA_VANTAGE_API_KEY = process.env.ALPHA_VANTAGE_API_KEY || 'demo';
+// API Keys
+const FINNHUB_API_KEY = process.env.FINNHUB_API_KEY || '';
 
-// Function to get cryptocurrency prices
+// Get cryptocurrency prices
 app.get('/api/crypto', async (req, res) => {
   try {
-    let cryptoData = null;
-    let apiUsed = '';
-
-    // Try CoinCap API first
-    try {
-      console.log('Trying CoinCap API...');
-      const response = await axios.get(`${COINCAP_API}/assets?limit=20`, { timeout: 10000 });
-      
-      if (response.data && response.data.data) {
-        cryptoData = response.data.data.map(coin => ({
-          id: coin.id,
-          symbol: coin.symbol,
-          name: coin.name,
-          price: parseFloat(coin.priceUsd).toFixed(2),
-          change24h: parseFloat(coin.changePercent24Hr).toFixed(2),
-          marketCap: parseFloat(coin.marketCapUsd).toFixed(0),
-          volume24h: parseFloat(coin.volumeUsd24Hr).toFixed(0),
-          rank: coin.rank
-        }));
-        apiUsed = 'CoinCap';
-      }
-    } catch (coincapError) {
-      console.log('CoinCap API failed:', coincapError.message);
-    }
-
-    // Try CoinGecko API as fallback
-    if (!cryptoData) {
-      try {
-        console.log('Trying CoinGecko API...');
-        const response = await axios.get(`${COINGECKO_API}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1`, { timeout: 10000 });
-        
-        if (response.data && Array.isArray(response.data)) {
-          cryptoData = response.data.map(coin => ({
-            id: coin.id,
-            symbol: coin.symbol.toUpperCase(),
-            name: coin.name,
-            price: coin.current_price.toFixed(2),
-            change24h: coin.price_change_percentage_24h.toFixed(2),
-            marketCap: coin.market_cap.toFixed(0),
-            volume24h: coin.total_volume.toFixed(0),
-            rank: coin.market_cap_rank
-          }));
-          apiUsed = 'CoinGecko';
-        }
-      } catch (coingeckoError) {
-        console.log('CoinGecko API failed:', coingeckoError.message);
-      }
-    }
-
-    if (cryptoData && cryptoData.length > 0) {
-      res.json({
-        success: true,
-        data: cryptoData,
-        timestamp: new Date().toISOString(),
-        apiUsed: apiUsed
-      });
-    } else {
-      throw new Error('All cryptocurrency APIs are currently unavailable');
-    }
-  } catch (error) {
-    console.error('Failed to get cryptocurrency data from any API:', error.message);
+    const response = await axios.get(
+      `${COINGECKO_API}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1`,
+      { timeout: 10000 }
+    );
     
-    res.status(503).json({
-      success: false,
-      error: 'Cryptocurrency data service is currently unavailable',
-      message: 'Unable to fetch real-time cryptocurrency prices. Please check your internet connection and try again.',
-      timestamp: new Date().toISOString()
+    if (!response.data || !Array.isArray(response.data)) {
+      throw new Error('Invalid response from CoinGecko');
+    }
+    
+    const cryptoData = response.data.map(coin => ({
+      id: coin.id,
+      symbol: String(coin.symbol || '').toUpperCase(),
+      name: coin.name,
+      price: Number(coin.current_price || 0).toFixed(2),
+      change24h: Number(coin.price_change_percentage_24h || 0).toFixed(2),
+      marketCap: Number(coin.market_cap || 0).toFixed(0),
+      volume24h: Number(coin.total_volume || 0).toFixed(0),
+      rank: coin.market_cap_rank
+    }));
+    
+    res.json({ 
+      success: true, 
+      data: cryptoData, 
+      timestamp: new Date().toISOString() 
+    });
+  } catch (error) {
+    console.error('Crypto API error:', error.message);
+    res.status(503).json({ 
+      success: false, 
+      error: 'Could not get crypto data' 
     });
   }
 });
 
-// Function to get stock prices
+// Get stock prices
 app.get('/api/stocks', async (req, res) => {
   try {
-    // We use fake stock data for this demo
-    const stocks = [
-      { symbol: 'AAPL', name: 'Apple Inc.', price: 175.43, change: 2.15, changePercent: 1.24 },
-      { symbol: 'TSLA', name: 'Tesla Inc.', price: 248.87, change: -5.23, changePercent: -2.06 },
-      { symbol: 'GOOGL', name: 'Alphabet Inc.', price: 142.56, change: 1.89, changePercent: 1.34 },
-      { symbol: 'MSFT', name: 'Microsoft Corporation', price: 378.91, change: 3.45, changePercent: 0.92 },
-      { symbol: 'AMZN', name: 'Amazon.com Inc.', price: 155.23, change: -1.12, changePercent: -0.72 },
-      { symbol: 'META', name: 'Meta Platforms Inc.', price: 325.67, change: 4.78, changePercent: 1.49 },
-      { symbol: 'NVDA', name: 'NVIDIA Corporation', price: 875.34, change: 12.45, changePercent: 1.44 },
-      { symbol: 'NFLX', name: 'Netflix Inc.', price: 485.12, change: -8.34, changePercent: -1.69 }
-    ];
-
-    res.json({
-      success: true,
-      data: stocks,
-      timestamp: new Date().toISOString()
+    if (!FINNHUB_API_KEY) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Missing API key', 
+        message: 'Set FINNHUB_API_KEY in backend/.env and restart the server.' 
+      });
+    }
+    
+    const symbols = ['AAPL', 'MSFT', 'NVDA', 'TSLA', 'AMZN', 'META', 'GOOGL', 'NFLX', 'AMD', 'INTC', 'SHOP', 'BA', 'DIS', 'JPM', 'BAC', 'V', 'MA', 'KO', 'PEP', 'NKE'];
+    
+    // Fetch all stock quotes in parallel
+    const requests = symbols.map(symbol => 
+      axios.get(`${FINNHUB_API}/quote`, {
+        params: { symbol, token: FINNHUB_API_KEY }, 
+        timeout: 10000
+      })
+      .then(r => ({ symbol, data: r.data }))
+      .catch(err => ({ symbol, error: err }))
+    );
+    
+    const results = await Promise.all(requests);
+    
+    const stocks = results.map(r => {
+      if (r.error || !r.data || typeof r.data.c !== 'number') {
+        console.warn(`Failed to get quote for ${r.symbol}`);
+        return null;
+      }
+      
+      const price = Number(r.data.c || 0);
+      const prevClose = Number(r.data.pc || price);
+      const change = price - prevClose;
+      const changePercent = prevClose ? (change / prevClose) * 100 : 0;
+      
+      return { 
+        symbol: r.symbol, 
+        name: r.symbol, 
+        price, 
+        change, 
+        changePercent 
+      };
+    }).filter(Boolean);
+    
+    if (!stocks.length) {
+      throw new Error('No data from Finnhub');
+    }
+    
+    res.json({ 
+      success: true, 
+      data: stocks, 
+      timestamp: new Date().toISOString() 
     });
   } catch (error) {
-    console.error('Could not get stock data:', error.message);
-    res.status(500).json({
-      success: false,
-      error: 'Could not get stock data'
+    console.error('Stock API error:', error.message);
+    res.status(503).json({ 
+      success: false, 
+      error: 'Could not get stock data' 
     });
   }
 });
 
-// Function to convert money from one currency to another
+
+
+// Convert currency
 app.get('/api/currency/:from/:to', async (req, res) => {
   try {
     const { from, to } = req.params;
     
-    // Check if both currencies are provided
     if (!from || !to) {
       return res.status(400).json({
         success: false,
@@ -139,7 +135,7 @@ app.get('/api/currency/:from/:to', async (req, res) => {
     }
 
     try {
-      // Try to get real exchange rate from the internet
+      // Get real exchange rate
       const response = await axios.get(`${EXCHANGE_RATE_API}/${from.toUpperCase()}`, { timeout: 5000 });
       const rates = response.data.rates;
       const exchangeRate = rates[to.toUpperCase()];
@@ -160,8 +156,8 @@ app.get('/api/currency/:from/:to', async (req, res) => {
         timestamp: new Date().toISOString()
       });
     } catch (apiError) {
-      // Use fake exchange rates when we can't get real ones
-      const fakeRates = {
+      // Fallback rates if API fails
+      const fallbackRates = {
         'USD': { 'EUR': 0.85, 'GBP': 0.73, 'JPY': 110.0, 'CAD': 1.25, 'AUD': 1.35, 'CHF': 0.92, 'CNY': 6.45, 'INR': 74.0, 'BRL': 5.2, 'PHP': 50.0, 'KRW': 1180.0 },
         'EUR': { 'USD': 1.18, 'GBP': 0.86, 'JPY': 129.0, 'CAD': 1.47, 'AUD': 1.59, 'CHF': 1.08, 'CNY': 7.59, 'INR': 87.0, 'BRL': 6.12, 'PHP': 58.8, 'KRW': 1388.0 },
         'GBP': { 'USD': 1.37, 'EUR': 1.16, 'JPY': 150.0, 'CAD': 1.71, 'AUD': 1.85, 'CHF': 1.26, 'CNY': 8.84, 'INR': 101.0, 'BRL': 7.12, 'PHP': 68.5, 'KRW': 1616.0 }
@@ -171,12 +167,11 @@ app.get('/api/currency/:from/:to', async (req, res) => {
       const toUpper = to.toUpperCase();
       
       let exchangeRate = 1;
-      if (fakeRates[fromUpper] && fakeRates[fromUpper][toUpper]) {
-        exchangeRate = fakeRates[fromUpper][toUpper];
+      if (fallbackRates[fromUpper] && fallbackRates[fromUpper][toUpper]) {
+        exchangeRate = fallbackRates[fromUpper][toUpper];
       } else if (fromUpper === toUpper) {
         exchangeRate = 1;
       } else {
-        // Make up a random rate for other combinations
         exchangeRate = (Math.random() * 2 + 0.5).toFixed(4);
       }
 
@@ -190,11 +185,11 @@ app.get('/api/currency/:from/:to', async (req, res) => {
           result: parseFloat(exchangeRate)
         },
         timestamp: new Date().toISOString(),
-        note: 'Using fake data - real data not available'
+        note: 'Using fallback data'
       });
     }
   } catch (error) {
-    console.error('Could not get currency data:', error.message);
+    console.error('Currency API error:', error.message);
     res.status(500).json({
       success: false,
       error: 'Could not get exchange rate'
@@ -202,25 +197,22 @@ app.get('/api/currency/:from/:to', async (req, res) => {
   }
 });
 
-// Function to check if the server is working
+// Health check
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
-    message: 'Finance Dashboard is working!',
+    message: 'Finance Dashboard API is running',
     timestamp: new Date().toISOString()
   });
 });
 
-// API routes only - no static file serving
-// The frontend will be served separately
-
 // Start the server
 app.listen(PORT, () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
-  console.log(`📊 Finance Dashboard is ready!`);
-  console.log(`🔗 Available functions:`);
-  console.log(`   GET /api/crypto - Get cryptocurrency prices`);
-  console.log(`   GET /api/stocks - Get stock prices`);
-  console.log(`   GET /api/currency/{from}/{to} - Convert currencies`);
-  console.log(`   GET /api/health - Check if server is working`);
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📊 Finance Dashboard API ready!`);
+  console.log(`\nAvailable endpoints:`);
+  console.log(`   GET /api/crypto - Cryptocurrency prices`);
+  console.log(`   GET /api/stocks - Stock prices`);
+  console.log(`   GET /api/currency/{from}/{to} - Currency converter`);
+  console.log(`   GET /api/health - Health check`);
 });
