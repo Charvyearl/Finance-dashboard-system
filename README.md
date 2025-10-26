@@ -2,6 +2,8 @@
 
 A simple financial dashboard that displays cryptocurrency prices, stock prices, and currency exchange rates.
 
+**🚀 Ready to Deploy to Railway!** See [START_HERE.md](./START_HERE.md) for deployment guides.
+
 ## 🚀 What It Does
 
 ### 📈 Cryptocurrency Prices
@@ -208,6 +210,31 @@ PORT=3001
 - Make sure backend is running on port 5000
 - Check `REACT_APP_API_URL` in client/.env
 - Clear browser cache and hard refresh
+
+## 🚀 Deployment
+
+### Deploy to Railway
+
+This project is ready to deploy to Railway! Railway automatically handles both the backend and frontend services.
+
+**Quick Start:** See [RAILWAY_QUICKSTART.md](./RAILWAY_QUICKSTART.md) for a 10-minute deployment guide.
+
+**Full Guide:** See [RAILWAY_DEPLOYMENT.md](./RAILWAY_DEPLOYMENT.md) for detailed instructions.
+
+**What's Included:**
+- ✅ Railway configuration files (`railway.json`)
+- ✅ CORS configuration for production
+- ✅ Environment variable setup
+- ✅ Serve package for frontend hosting
+
+**Deployment Summary:**
+1. Deploy backend → Get backend URL
+2. Deploy frontend → Set backend URL in env vars
+3. Update CORS → Done! 🎉
+
+**Cost:** Free tier on Railway ($5 credit/month) is sufficient for this project.
+
+---
 
 ## 📝 License
 
