@@ -61,15 +61,6 @@ const CurrencyConverter = () => {
     setError(null);
   };
 
-  const formatCurrency = (amount, currency) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: currency,
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }).format(amount);
-  };
-
   const getCurrencyInfo = (code) => {
     return popularCurrencies.find(currency => currency.code === code) || 
            { code, name: code, flag: '🌍' };
@@ -80,6 +71,7 @@ const CurrencyConverter = () => {
     if (amount && fromCurrency && toCurrency && fromCurrency !== toCurrency) {
       convertCurrency();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fromCurrency, toCurrency]);
 
   return (

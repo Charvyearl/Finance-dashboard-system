@@ -23,7 +23,7 @@
    ```env
    PORT=5000
    NODE_ENV=production
-   FINNHUB_API_KEY=your_key_here
+   FINNHUB_API_KEY=d3hvev1r01qr304fn19gd3hvev1r01qr304fn1a0
    CORS_ORIGIN=*
    ```
 
@@ -50,9 +50,9 @@
 3. **Set Variables**
    ```env
    NODE_ENV=production
-   REACT_APP_API_URL=https://your-backend-url.up.railway.app/api
+   REACT_APP_API_URL=https://finance-dashboard-system-production.up.railway.app/api
    ```
-   *(Use your backend URL from step above)*
+   *(Use your backend URL from step above - must include https:// and /api)*
 
 4. **Generate Domain**
    - Settings → Generate Domain

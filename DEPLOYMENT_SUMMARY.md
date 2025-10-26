@@ -9,11 +9,20 @@ Your Finance Dashboard is now **ready to deploy to Railway**! Here's everything 
 ## 📁 New Files Created
 
 ### Configuration Files
-1. **`backend/railway.json`**
+1. **`backend/nixpacks.toml`**
+   - Nixpacks configuration for backend
+   - Forces `npm install` instead of `npm ci`
+
+2. **`client/nixpacks.toml`**
+   - Nixpacks configuration for frontend
+   - Forces `npm install` instead of `npm ci`
+   - Specifies build and start commands
+
+3. **`backend/railway.json`**
    - Railway deployment configuration for backend
    - Specifies build and start commands
 
-2. **`client/railway.json`**
+4. **`client/railway.json`**
    - Railway deployment configuration for frontend
    - Configures build and serve commands
 

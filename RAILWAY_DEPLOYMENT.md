@@ -351,6 +351,8 @@ After deployment, save these URLs:
 - **Backend Health**: `https://your-backend-url.up.railway.app/api/health`
 
 ### Key Files for Railway
+- `backend/nixpacks.toml` - Backend Nixpacks configuration (forces npm install)
+- `client/nixpacks.toml` - Frontend Nixpacks configuration (forces npm install)
 - `backend/railway.json` - Backend Railway configuration
 - `client/railway.json` - Frontend Railway configuration
 - `backend/server.js` - Backend entry point
